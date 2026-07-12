@@ -12,6 +12,7 @@ A lightweight (~1 KB gzipped) frontend companion to [`erag/laravel-lang-sync-ine
 - Clean API: `trans()` and `__()`
 - Placeholder replacement via `{name}` syntax
 - Nested key support: `auth.errors.required`
+- Nested language directories shared from Laravel with dot or slash notation, e.g. `syncLangFiles('admin.users')` → `__('admin.users.name')`
 - Missing key fallback: `__('I love programming.')` returns `I love programming.`
 - Full **TypeScript** support
 - Super lightweight (~1 KB gzipped)
@@ -196,6 +197,21 @@ trans('auth.welcome', { name: 'Amit' })
 ```php
 syncLangFiles(['auth', 'dashboard']);
 return Inertia::render('Dashboard');
+```
+
+Nested language directories can be referenced from Laravel with dot or slash notation:
+
+```php
+syncLangFiles('admin.users');
+syncLangFiles('admin/users');
+
+return Inertia::render('Admin/Users/Index');
+```
+
+For a file like `lang/en/admin/users.php`, use the full nested key path on the frontend:
+
+```ts
+__('admin.users.name')
 ```
 
 ### Language file — `resources/lang/en/auth.php`
