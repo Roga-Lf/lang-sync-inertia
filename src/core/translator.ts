@@ -97,7 +97,7 @@ function getValueFromKey(lang: LangObject | undefined, key: string): string | un
     return lang[key] as string
   }
 
-  const current = key.split(/[./\\]+/).reduce<LangValue | undefined>((value, segment) => {
+  const current = key.split('.').reduce<LangValue | undefined>((value, segment) => {
     if (typeof value !== 'object' || value === null) {
       return undefined
     }
