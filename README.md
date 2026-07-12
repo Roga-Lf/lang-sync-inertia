@@ -9,9 +9,12 @@ A lightweight (~1 KB gzipped) frontend companion to [`erag/laravel-lang-sync-ine
 ## Features
 
 - Works with **Vue 3**, **React 18/19**, and **Svelte 5**
-- Clean API: `trans()` and `__()`
-- Placeholder replacement via `{name}` syntax
+- Clean API: `trans()`, `__()`, `transChoice()`, and `trans_choice()`
+- Laravel-style placeholder replacement via `:name` syntax
+- Legacy placeholder replacement via `{name}` syntax
+- Pluralization support with Laravel-style exact and interval choices
 - Nested key support: `auth.errors.required`
+- Nested language directories shared from Laravel with dot notation, e.g. `syncLangFiles('admin.users')` → `__('admin.users.name')`
 - Missing key fallback: `__('I love programming.')` returns `I love programming.`
 - Full **TypeScript** support
 - Super lightweight (~1 KB gzipped)
@@ -47,7 +50,7 @@ npm install @erag/lang-sync-inertia
 ```ts
 import { lang } from '@erag/lang-sync-inertia/vue'
 
-const { trans, __ } = lang()
+const { trans, __, transChoice } = lang()
 ```
 
 **Component example:**
@@ -56,12 +59,13 @@ const { trans, __ } = lang()
 <script setup lang="ts">
 import { lang } from '@erag/lang-sync-inertia/vue'
 
-const { trans, __ } = lang()
+const { trans, __, transChoice } = lang()
 </script>
 
 <template>
   <h1>{{ __('auth.greeting') }}</h1>
   <p>{{ trans('auth.welcome', { name: 'Amit' }) }}</p>
+  <p>{{ transChoice('auth.apples', 3) }}</p>
 </template>
 ```
 
@@ -72,7 +76,7 @@ const { trans, __ } = lang()
 ```ts
 import { lang } from '@erag/lang-sync-inertia/react'
 
-const { trans, __ } = lang()
+const { trans, __, transChoice } = lang()
 ```
 
 **Component example:**
@@ -81,12 +85,13 @@ const { trans, __ } = lang()
 import { lang } from '@erag/lang-sync-inertia/react'
 
 export default function Login() {
-  const { trans, __ } = lang()
+  const { trans, __, transChoice } = lang()
 
   return (
     <div>
       <h1>{__('auth.greeting')}</h1>
       <p>{trans('auth.welcome', { name: 'Amit' })}</p>
+      <p>{transChoice('auth.apples', 3)}</p>
     </div>
   )
 }
@@ -101,7 +106,7 @@ Requires `@inertiajs/svelte` v3 (Svelte 5).
 ```ts
 import { lang } from '@erag/lang-sync-inertia/svelte'
 
-const { trans, __ } = lang()
+const { trans, __, transChoice } = lang()
 ```
 
 **Component example:**
@@ -110,11 +115,12 @@ const { trans, __ } = lang()
 <script module lang="ts">
 import { lang } from '@erag/lang-sync-inertia/svelte'
 
-const { trans, __ } = lang()
+const { trans, __, transChoice } = lang()
 </script>
 
 <h1>{__('auth.greeting')}</h1>
 <p>{trans('auth.welcome', { name: 'Amit' })}</p>
+<p>{transChoice('auth.apples', 3)}</p>
 ```
 
 ---
@@ -187,6 +193,33 @@ trans('auth.welcome', { name: 'Amit' })
 // → "Welcome, Amit!"
 ```
 
+### `transChoice(key, count, replaces?)`
+
+Translates a pluralized key using Laravel-style pluralization strings. The `trans_choice()` alias is also available.
+
+```ts
+transChoice('auth.apples', 1)
+// → "There is one apple"
+
+transChoice('auth.apples', 5)
+// → "There are 5 apples"
+
+trans_choice('auth.notifications', 0)
+// → "No notifications"
+
+trans_choice('auth.notifications', 3)
+// → "3 notifications"
+```
+
+Laravel language file example:
+
+```php
+return [
+    'apples' => 'There is one apple|There are :count apples',
+    'notifications' => '{0} No notifications|{1} One notification|[2,*] :count notifications',
+];
+```
+
 ---
 
 ## Laravel Integration
@@ -198,12 +231,27 @@ syncLangFiles(['auth', 'dashboard']);
 return Inertia::render('Dashboard');
 ```
 
+Nested language directories can be referenced from Laravel with dot notation:
+
+```php
+syncLangFiles('admin.users');
+
+return Inertia::render('Admin/Users/Index');
+```
+
+For a file like `lang/en/admin/users.php`, use the full nested key path on the frontend:
+
+```ts
+__('admin.users.name')
+```
+
 ### Language file — `resources/lang/en/auth.php`
 
 ```php
 return [
     'greeting' => 'Hello!',
     'welcome'  => 'Welcome, :name',
+    'apples'   => 'There is one apple|There are :count apples',
 ];
 ```
 
