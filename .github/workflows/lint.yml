@@ -2,9 +2,9 @@ name: Lint & Type Check
 
 on:
   push:
-    branches: ["main"]
+    branches: ['main']
   pull_request:
-    branches: ["main"]
+    branches: ['main']
 
 jobs:
   lint:
@@ -18,10 +18,13 @@ jobs:
           node-version: 24
 
       - name: Install dependencies
-        run: npm install
+        run: npm ci
 
       - name: Run Lint Check
         run: npm run lint:check
 
       - name: Run TypeScript Check
         run: npm run type-check
+
+      - name: Run Tests
+        run: npm test

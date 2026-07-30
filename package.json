@@ -64,10 +64,11 @@
   "scripts": {
     "build": "vite build --config vite.config.ts && tsc -p tsconfig.json --emitDeclarationOnly",
     "prepare": "npm run build",
-    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\" \"*.{json,ts}\"",
-    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\" \"*.{json,ts}\"",
+    "format": "prettier --write \"src/**/*.{ts,tsx,js,json,md}\" \"tests/**/*.{mjs,md}\" \".github/workflows/*.{yml,yaml}\" \"*.{json,ts}\"",
+    "format:check": "prettier --check \"src/**/*.{ts,tsx,js,json,md}\" \"tests/**/*.{mjs,md}\" \".github/workflows/*.{yml,yaml}\" \"*.{json,ts}\"",
     "lint": "eslint src",
     "lint:check": "npm run format:check && npm run lint",
+    "test": "npm run build && node --test tests/*.test.mjs",
     "type-check": "tsc --noEmit",
     "release": "release-it",
     "upgrade": "npx npm-check-updates -u"
