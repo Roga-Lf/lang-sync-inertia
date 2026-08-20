@@ -75,7 +75,7 @@ const { trans, __, transChoice } = vueLang()
 ### React
 
 ```ts
-import { reactLang } from "@erag/lang-sync-inertia/react"
+import { reactLang } from '@erag/lang-sync-inertia/react'
 
 const { trans, __, transChoice } = reactLang()
 ```
